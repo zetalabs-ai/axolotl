@@ -572,6 +572,8 @@ def load_prepare_datasets(
         train_dataset = dataset["train"]
         eval_dataset = dataset["test"]
     else:
+        LOG.info("Using no eval dataset")
+        LOG.info(f"data: {dataset}")
         train_dataset = dataset
         eval_dataset = None
 
