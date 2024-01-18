@@ -341,7 +341,7 @@ def load_tokenized_prepared_datasets(
                     ds = ds.shuffle(seed=seed).shard(
                         num_shards=config_dataset.shards, index=0
                     )
-
+            print(ds)
             d_base_type = d_prompt_style = None
             d_type = config_dataset.type
             if isinstance(d_type, str):
@@ -349,7 +349,24 @@ def load_tokenized_prepared_datasets(
                 d_base_type = d_type_split[0]
                 d_prompt_style = d_type_split[1] if len(d_type_split) > 1 else None
             if "train" in ds:
-                ds = ds["train"]
+                datasets_dict = {}
+                prompters_dict = {}
+
+                for split in ['train', 'test']:
+                    if split in ds:
+                        ds_split = ds[split]
+                        dataset_wrapper, dataset_prompter = get_dataset_wrapper(
+                            config_dataset=config_dataset,
+                            dataset=ds_split,
+                            tokenizer=tokenizer,
+                            cfg=cfg,
+                            d_base_type=d_base_type,
+                            d_prompt_style=d_prompt_style,
+                        )
+                        datasets_dict[split] = dataset_wrapper
+                        prompters_dict[split] = dataset_prompter
+
+                return datasets_dict, prompters_dict
             elif (
                 isinstance(ds, DatasetDict)
                 and config_dataset.train_on_split
