@@ -567,6 +567,9 @@ def load_prepare_datasets(
 
         train_dataset = dataset["train"]
         eval_dataset = dataset["test"]
+    elif "test" in dataset:
+        train_dataset = dataset["train"]
+        eval_dataset = dataset["test"]
     else:
         train_dataset = dataset
         eval_dataset = None
