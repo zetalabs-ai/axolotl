@@ -568,6 +568,7 @@ def load_prepare_datasets(
         train_dataset = dataset["train"]
         eval_dataset = dataset["test"]
     elif "test" in dataset:
+        LOG.info("Using test split as eval dataset")
         train_dataset = dataset["train"]
         eval_dataset = dataset["test"]
     else:
