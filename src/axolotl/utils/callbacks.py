@@ -45,6 +45,29 @@ LOG = logging.getLogger("axolotl.callbacks")
 IGNORE_INDEX = -100
 
 
+
+class LogBatchSizeCallback(TrainerCallback):
+    def on_train_begin(self, args, state, control, **kwargs):
+        # Log the batch size
+        print(f"Batch size: {args.per_device_train_batch_size}")
+        print(f"Batch size: {args.per_device_eval_batch_size}")
+
+class PrintDimensionCallback(TrainerCallback):
+    def on_train_batch_begin(self, args, state, control, model_inputs=None, **kwargs):
+        if model_inputs is not None:
+            print("Training batch input dimensions:", {k: v.shape for k, v in model_inputs.items()})
+
+    def on_evaluate_batch_begin(self, args, state, control, model_inputs=None, **kwargs):
+        if model_inputs is not None:
+            print("Evaluation batch input dimensions:", {k: v.shape for k, v in model_inputs.items()})
+    
+    def on_step_begin(self, args, state, control, model=None, **kwargs):
+        dataloader_iter = kwargs.get('dataloader_iter')
+        if dataloader_iter is not None:
+            batch = next(dataloader_iter, None)
+            if batch is not None:
+                print(f"Batch dimensions: {batch.shape}")
+
 class EvalFirstStepCallback(
     TrainerCallback
 ):  # pylint: disable=too-few-public-methods disable=unused-argument

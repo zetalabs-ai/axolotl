@@ -8,11 +8,10 @@ load_in_4bit: true
 strict: false
 
 datasets:
-  - path: zeta-labs/mind2web_100_17_01
+  - path: zeta-labs/mind2web_combined_236_18_01
     type: alpaca
-dataset_prepared_path: 
-dataset_processes: 1
-hub_model_id: zeta-labs/mind2web_debug
+dataset_prepared_path: netvol/last_run_prepared
+hub_model_id: zeta-labs/combined_236_18_01_test_001
 hub_strategy: "end"
 val_set_size: 0
 output_dir: ./qlora-out
@@ -22,9 +21,7 @@ lora_model_dir:
 
 sequence_len: 8192
 sample_packing: false
-eval_sample_packing: false
 pad_to_sequence_len: true
-max_packed_sequence_len:
 
 
 lora_r: 32
@@ -41,14 +38,14 @@ lora_target_modules:
   - k_proj
   - o_proj
 
-wandb_project: finetune_all_prompts
+wandb_project: finetune_action
 wandb_entity:
 wandb_watch:
 wandb_name:
 wandb_log_model:
 
 gradient_accumulation_steps: 2
-micro_batch_size: 4
+micro_batch_size: 16
 num_epochs: 3
 optimizer: adamw_bnb_8bit
 lr_scheduler: cosine
@@ -73,9 +70,9 @@ loss_watchdog_patience: 3
 
 warmup_steps: 10
 evals_per_epoch: 4
-eval_batch_size: 4
-eval_table_size: 
-eval_table_max_new_tokens: 
+eval_batch_size: 16
+eval_table_size:
+eval_table_max_new_tokens: 256
 saves_per_epoch: 1
 debug:
 deepspeed: 

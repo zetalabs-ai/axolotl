@@ -349,24 +349,25 @@ def load_tokenized_prepared_datasets(
                 d_base_type = d_type_split[0]
                 d_prompt_style = d_type_split[1] if len(d_type_split) > 1 else None
             if "train" in ds:
-                datasets_dict = {}
-                prompters_dict = {}
+                ds = ds["train"]
+                # datasets_dict = {}
+                # prompters_dict = {}
 
-                for split in ['train', 'test']:
-                    if split in ds:
-                        ds_split = ds[split]
-                        dataset_wrapper, dataset_prompter = get_dataset_wrapper(
-                            config_dataset=config_dataset,
-                            dataset=ds_split,
-                            tokenizer=tokenizer,
-                            cfg=cfg,
-                            d_base_type=d_base_type,
-                            d_prompt_style=d_prompt_style,
-                        )
-                        datasets_dict[split] = dataset_wrapper
-                        prompters_dict[split] = dataset_prompter
+                # for split in ['train', 'test']:
+                #     if split in ds:
+                #         ds_split = ds[split]
+                #         dataset_wrapper, dataset_prompter = get_dataset_wrapper(
+                #             config_dataset=config_dataset,
+                #             dataset=ds_split,
+                #             tokenizer=tokenizer,
+                #             cfg=cfg,
+                #             d_base_type=d_base_type,
+                #             d_prompt_style=d_prompt_style,
+                #         )
+                #         datasets_dict[split] = dataset_wrapper
+                #         prompters_dict[split] = dataset_prompter
 
-                return datasets_dict, prompters_dict
+                # return datasets_dict, prompters_dict
             elif (
                 isinstance(ds, DatasetDict)
                 and config_dataset.train_on_split
@@ -583,11 +584,11 @@ def load_prepare_datasets(
         )
 
         train_dataset = dataset["train"]
-        eval_dataset = dataset["test"]
+        eval_dataset = None
     elif "test" in dataset:
         LOG.info("Using test split as eval dataset")
         train_dataset = dataset["train"]
-        eval_dataset = dataset["test"]
+        eval_dataset = None
     else:
         LOG.info("Using no eval dataset")
         LOG.info(f"data: {dataset}")

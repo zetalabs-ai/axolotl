@@ -32,6 +32,8 @@ from axolotl.utils.callbacks import (
     SaveBetterTransformerModelCallback,
     bench_eval_callback_factory,
     log_prediction_callback_factory,
+    LogBatchSizeCallback,
+    PrintDimensionCallback
 )
 from axolotl.utils.collators import (
     BatchSamplerDataCollatorForSeq2Seq,
@@ -528,6 +530,8 @@ class HFCausalTrainerBuilder(TrainerBuilderBase):
         callbacks = []
         callbacks.append(GPUStatsCallback(self.cfg))
         callbacks.append(EvalFirstStepCallback)
+        callbacks.append(LogBatchSizeCallback)
+        callbacks.append(PrintDimensionCallback)
 
         if self.cfg.relora_steps:
             callbacks.append(ReLoRACallback(self.cfg))
@@ -878,7 +882,8 @@ class HFCausalTrainerBuilder(TrainerBuilderBase):
             trainer.accelerator.state.deepspeed_plugin.deepspeed_config[
                 "train_micro_batch_size_per_gpu"
             ] = self.cfg.micro_batch_size
-
+        print(f"Real training batch size: {trainer._train_batch_size}")
+        print(f"Real evaluation batch size: {trainer.args.eval_batch_size}")
         return trainer
 
     def build_collator(
